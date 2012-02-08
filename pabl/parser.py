@@ -17,7 +17,6 @@ class PABLParser(object):
                 raise ParseFatalException(s, l, "illegal nesting")
             raise ParseException(s, l, "not a peer entry")
 
-
     def check_sub_indent(self, s, l, t):
         curCol = col(l, s)
         if curCol > self.indentStack[-1]:
@@ -25,18 +24,16 @@ class PABLParser(object):
         else:
             raise ParseException(s, l, "not a subentry")
 
-
     def check_unindent(self, s, l, t):
-        if l >= len(s): return
+        if l >= len(s):
+            return
         curCol = col(l, s)
-        if not(
-        curCol < self.indentStack[-1] and curCol <= self.indentStack[-2]):
+        if not(curCol < self.indentStack[-1]
+               and curCol <= self.indentStack[-2]):
             raise ParseException(s, l, "not an unindent")
-
 
     def unindent(self):
         self.indentStack.pop()
-
 
     def parse_pabl(self, raw_pabl):
         INDENT = lineEnd.suppress() + empty + empty.copy().setParseAction(
@@ -57,17 +54,17 @@ class PABLParser(object):
         item_end = Literal(':').suppress()
         role_start = Literal('@role')
 
-        item_decl = (item_start + variable.setResultsName('item') + item_end )
+        item_decl = (item_start + variable.setResultsName('item') + item_end)
         item_defn = Group(item_decl + INDENT + suite + UNDENT)
 
         role_decl = (role_start + Group(
-            delimitedList(variable).setResultsName('role')) + item_end )
+            delimitedList(variable).setResultsName('role')) + item_end)
         role_defn = Group(role_decl + INDENT + suite + UNDENT)
 
         fieldList = delimitedList(variable).setResultsName(
             'fields') + terminator
 
-        stmt << ( item_defn | fieldList | Group(role_defn))
+        stmt << (item_defn | fieldList | Group(role_defn))
 
         parseTree = suite.parseString(raw_pabl)
 

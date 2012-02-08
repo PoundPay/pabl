@@ -44,7 +44,7 @@ class TestPABL(unittest.TestCase):
             ['first', 'second', ]
         ]
 
-        user_results =  [
+        user_results = [
             ['first', 'second', 'third', 'fourth'],
             ['first', 'second', 'third', 'fourth'],
             ['first', 'second', 'joeonly'],
@@ -56,4 +56,3 @@ class TestPABL(unittest.TestCase):
                 anonymous_results[counter])
             self.assertEqual(list(view.visible_fields(user)),
                 user_results[counter])
-
