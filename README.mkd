@@ -1,0 +1,24 @@
+Python API Building Language
+===========================
+
+Run tests
+---------
+
+* python setup.py nosetests
+
+Install
+-------
+
+* python setup.py install
+* Build your .pabl views:
+    @item account:
+        # default values for everyone
+        first, second, third,
+        fourth;
+        # views restricted to user.in_role('marketplaces')
+        @role marketplaces:
+            restricted;
+* Associate with your model object (optional):
+    class Account(object):
+        __pabl__ = '/views/account.pabl'
+* Call `render_to('json', item, user_like_object)` or `render_to('json', (item, '/views/account.pabl'), user_like_object)
