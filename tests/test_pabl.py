@@ -21,14 +21,14 @@ TEST_DATA = """\
     # default values for everyone
     first, second, third,
     fourth;
-    @role marketplaces:
+    @permissions marketplaces:
         restricted;
 @item account2:
     # default values for everyone
     first, second;
-    @role admin,pimp:
+    @permissions admin,pimp:
         adminOnly, secret, field;
-    @role joe:
+    @permissions joe:
         joeonly;
     """
 
@@ -44,7 +44,7 @@ class TestPABL(unittest.TestCase):
         parsed = parser.parse_pabl(TEST_DATA).asList()
 
         class LikeAUser(object):
-            def in_role(self, role_name):
+            def has_permission(self, role_name):
                 return role_name == 'joe'
 
         user = LikeAUser()

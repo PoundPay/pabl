@@ -52,19 +52,19 @@ class PABLParser(object):
 
         item_start = Literal('@item').suppress()
         item_end = Literal(':').suppress()
-        role_start = Literal('@role')
+        permission_start = Literal('@permissions')
 
         item_decl = (item_start + variable.setResultsName('item') + item_end)
         item_defn = Group(item_decl + INDENT + suite + UNDENT)
 
-        role_decl = (role_start + Group(
-            delimitedList(variable).setResultsName('role')) + item_end)
-        role_defn = Group(role_decl + INDENT + suite + UNDENT)
+        permission_decl = (permission_start + Group(
+            delimitedList(variable).setResultsName('permissions')) + item_end)
+        permission_defn = Group(permission_decl + INDENT + suite + UNDENT)
 
         fieldList = delimitedList(variable).setResultsName(
             'fields') + terminator
 
-        stmt << (item_defn | fieldList | Group(role_defn))
+        stmt << (item_defn | fieldList | Group(permission_defn))
 
         parseTree = suite.parseString(raw_pabl)
 

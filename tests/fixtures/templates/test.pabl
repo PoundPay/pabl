@@ -1,6 +1,6 @@
 @item account:
     id, title;
-    @role admin,staff:
+    @permissions admin,staff:
         secret;
-    @role staff:
+    @permissions staff:
         supersecret;

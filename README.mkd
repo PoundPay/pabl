@@ -19,7 +19,7 @@ Install
         first, second, third,
         fourth;
         # views restricted to user.in_role('marketplaces')
-        @role marketplaces:
+        @permissions marketplaces:
             restricted;
 
 * Associate with your model object (optional):
