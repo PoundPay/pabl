@@ -1,5 +1,5 @@
 @item account:
-    id, title;
+    id, title, alias as aliased;
     @permissions admin,staff:
         secret;
     @permissions staff:

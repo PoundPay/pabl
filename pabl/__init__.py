@@ -28,10 +28,16 @@ class PABL(object):
     def _to_json(self, obj, visible_fields):
         json_dict = {}
         for field in visible_fields:
-            field_value = getattr(obj, field)
+            if isinstance(field, tuple):  # we are aliasing this field
+                field_value = getattr(obj, field[0])
+                field_name = field[1]
+            else:
+                field_value = getattr(obj, field)
+                field_name = field
+
             try:
                 field_value = field_value()
             except TypeError:  # object is not callable
                 pass
-            json_dict[field] = field_value
+            json_dict[field_name] = field_value
         return json_dict

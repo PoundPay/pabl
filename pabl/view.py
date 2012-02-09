@@ -28,7 +28,14 @@ class View(object):
             if isinstance(field_or_permission, basestring):
                 yield field_or_permission
                 continue
-            if (user and isinstance(field_or_permission, list)
-                and len(field_or_permission[0]) == 3):
-                for field in self._yield_visible_fields(user, field_or_permission):
-                    yield field
+            if isinstance(field_or_permission, list):
+                item = field_or_permission
+                if not len(item):
+                    continue
+                if len(item) == 3:
+                    if item[1] == 'as':
+                        yield (item[0], item[2])
+                        continue
+                if user and isinstance(item[0], list) and len(item[0]) == 3:
+                    for field in self._yield_visible_fields(user, item):
+                        yield field

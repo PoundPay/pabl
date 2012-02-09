@@ -16,11 +16,12 @@ TEST_DATA = """\
     second,
 
     third,
-    fourth;
+    fourth,
+    fifth as sixth; # alias an item
 @item account1:
     # default values for everyone
-    first, second, third,
-    fourth;
+    first, second.prop, third,
+    fourth_underscore;
     @permissions marketplaces:
         restricted;
 @item account2:
@@ -50,14 +51,14 @@ class TestPABL(unittest.TestCase):
         user = LikeAUser()
 
         anonymous_results = [
-            ['first', 'second', 'third', 'fourth'],
-            ['first', 'second', 'third', 'fourth'],
+            ['first', 'second', 'third', 'fourth', ('fifth', 'sixth')],
+            ['first', 'second.prop', 'third', 'fourth_underscore'],
             ['first', 'second', ]
         ]
 
         user_results = [
-            ['first', 'second', 'third', 'fourth'],
-            ['first', 'second', 'third', 'fourth'],
+            ['first', 'second', 'third', 'fourth', ('fifth', 'sixth')],
+            ['first', 'second.prop', 'third', 'fourth_underscore'],
             ['first', 'second', 'joeonly'],
         ]
 
@@ -79,4 +80,6 @@ class TestPABL(unittest.TestCase):
         pabl = PABL(self.path_to_templates, self.module_directory)
         json = pabl.render_to('json', mock_account, None)
         self.assertDictEqual(json, {'id': mock_account.id.return_value,
-                                    'title': mock_account.title.return_value})
+                                    'title': mock_account.title.return_value,
+                                    'aliased': mock_account.alias
+                                                            .return_value})

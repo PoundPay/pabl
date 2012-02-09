@@ -43,7 +43,9 @@ class PABLParser(object):
 
         terminator = Literal(';').suppress()
         comment = Literal('#') + restOfLine
-        variable = Word(alphas, alphanums)
+        item_name = Word(alphas, alphanums)
+        variable = Word(alphas, alphanums + '_.')
+        variable_as = (variable + 'as' + item_name)
 
         stmt = Forward()
         suite = Group(
@@ -54,15 +56,16 @@ class PABLParser(object):
         item_end = Literal(':').suppress()
         permission_start = Literal('@permissions')
 
-        item_decl = (item_start + variable.setResultsName('item') + item_end)
+        item_decl = (item_start + item_name.setResultsName('item') + item_end)
         item_defn = Group(item_decl + INDENT + suite + UNDENT)
 
         permission_decl = (permission_start + Group(
-            delimitedList(variable).setResultsName('permissions')) + item_end)
+            delimitedList(item_name).setResultsName('permissions')) + item_end)
         permission_defn = Group(permission_decl + INDENT + suite + UNDENT)
 
-        fieldList = delimitedList(variable).setResultsName(
-            'fields') + terminator
+        fieldList = delimitedList(
+            Group(variable_as) | variable
+        ).setResultsName('fields') + terminator
 
         stmt << (item_defn | fieldList | Group(permission_defn))
 
