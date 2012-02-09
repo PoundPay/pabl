@@ -28,4 +28,4 @@ Install
     
         __pabl__ = '/views/account.pabl'
 
-* Call `render_to('json', item, user_like_object)` or `render_to('json', (item, '/views/account.pabl'), user_like_object)`
+* Call `PABL(...).render_to('json', item, user_like_object)` or `PABL(...).render_to('json', (item, 'account.pabl'), user_like_object)`

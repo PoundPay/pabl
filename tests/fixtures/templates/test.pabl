@@ -1,0 +1,6 @@
+@item account:
+    id, title;
+    @role admin,staff:
+        secret;
+    @role staff:
+        supersecret;

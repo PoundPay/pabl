@@ -3,10 +3,11 @@
 from setuptools import setup, find_packages
 
 tests_require = [
-    'nose ==1.1.2',
+    'nose =>1.1.0',
 ]
 
 install_requires = [
+    'Mako==0.6.2',
     'pyparsing==1.5.6',
 ]
 
