@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 tests_require = [
     'mock==0.7.2',
-    'nose =>1.1.0',
+    'nose==1.1.0',
 ]
 
 install_requires = [
