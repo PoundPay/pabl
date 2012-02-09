@@ -1,6 +1,8 @@
 Python API Building Language
 ===========================
 
+Write simple representations of exposed objects with Mako templates and python.
+
 Run tests
 ---------
 
