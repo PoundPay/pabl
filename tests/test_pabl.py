@@ -82,4 +82,25 @@ class TestPABL(unittest.TestCase):
         self.assertDictEqual(json, {'id': mock_account.id.return_value,
                                     'title': mock_account.title.return_value,
                                     'aliased': mock_account.alias
-                                                            .return_value})
+                                    .return_value})
+
+    def test_PABL(self):
+        mock_account = mock.Mock()
+        mock_account.__pabl__ = 'test.pabl'
+
+        mock_subitem = mock.Mock()
+        mock_subitem.__pabl__ = 'test.pabl'
+
+        mock_account.alias.return_value = mock_subitem
+
+        pabl = PABL(self.path_to_templates, self.module_directory)
+        json = pabl.render_to('json', mock_account, None)
+
+        self.assertDictEqual(json, {'id': mock_account.id.return_value,
+                                'title': mock_account.title.return_value,
+                                'aliased': {
+                                    'id': mock_subitem.id.return_value,
+                                    'title': mock_subitem.title.return_value,
+                                    'aliased': mock_subitem.alias.return_value,
+                                }
+        })
