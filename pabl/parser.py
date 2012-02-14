@@ -43,7 +43,7 @@ class PABLParser(object):
 
         terminator = Literal(';').suppress()
         comment = Literal('#') + restOfLine
-        item_name = Word(alphas, alphanums)
+        item_name = Word(alphas, alphanums + '_')
         variable = Word(alphas, alphanums + '_.')
         variable_as = (variable + 'as' + item_name)
 
