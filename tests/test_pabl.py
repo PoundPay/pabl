@@ -26,7 +26,7 @@ TEST_DATA = """\
         restricted;
 @item account2:
     # default values for everyone
-    first, second;
+    first, second.third.fourth as fifth;
     @permissions admin,pimp:
         adminOnly, secret, field;
     @permissions joe:
@@ -53,13 +53,13 @@ class TestPABL(unittest.TestCase):
         anonymous_results = [
             ['first', 'second', 'third', 'fourth', ('fifth', 'sixth')],
             ['first', 'second.prop', 'third', 'fourth_underscore'],
-            ['first', 'second', ]
+            ['first', ('second.third.fourth', 'fifth'), ]
         ]
 
         user_results = [
             ['first', 'second', 'third', 'fourth', ('fifth', 'sixth')],
             ['first', 'second.prop', 'third', 'fourth_underscore'],
-            ['first', 'second', 'joeonly'],
+            ['first', ('second.third.fourth', 'fifth'), 'joeonly'],
         ]
 
         for counter, item in enumerate(parsed[0]):
@@ -104,3 +104,9 @@ class TestPABL(unittest.TestCase):
                                     'aliased': mock_subitem.alias.return_value,
                                 }
         })
+
+    def test_find_obj(self):
+        input = 'something.nested.here.the.thing'
+        mock_thing = mock.Mock()
+        result = PABL.find_obj(mock_thing, input)
+        self.assertEqual(mock_thing.something.nested.here.the.thing, result)

@@ -34,10 +34,10 @@ class PABL(object):
         json_dict = {}
         for field in visible_fields:
             if isinstance(field, tuple):  # we are aliasing this field
-                field_value = getattr(obj, field[0])
+                field_value = PABL.find_obj(obj, field[0])
                 field_name = field[1]
             else:
-                field_value = getattr(obj, field)
+                field_value = PABL.find_obj(obj, field)
                 field_name = field
 
             try:
@@ -50,3 +50,11 @@ class PABL(object):
 
             json_dict[field_name] = field_value
         return json_dict
+
+    @classmethod
+    def find_obj(cls, obj, dotted):
+        value = obj
+        while dotted.find('.') >= 0:
+            root, _, dotted = dotted.partition('.')
+            value = getattr(value, root)
+        return getattr(value, dotted)
