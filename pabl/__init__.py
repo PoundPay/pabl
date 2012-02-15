@@ -10,17 +10,18 @@ class PABL(object):
     def __init__(self, root_template_directory=None, module_directory=None):
         self.template_loader = Template(root_template_directory,
             module_directory)
-        self.formatters = {'json': self._to_json}
+        self.formatters = {'json': self.to_json}
         self.parser = PABLParser()
 
-    def render_to(self, format, obj, user=None, ):
+    def render_to(self, format, obj, user=None, wrap=True):
         if isinstance(obj, tuple):
             template_name = obj[1]
         else:
             template_name = obj.__pabl__
 
         view = self._load_view(template_name)
-        return self.formatters[format](obj, view.visible_fields(user), user)
+        return self.formatters[format](obj, view.resource_name,
+            view.visible_fields(user), user, wrap)
 
     def _load_view(self, template_name):
 
@@ -29,6 +30,12 @@ class PABL(object):
         view = View(parsed_pabl[0])
 
         return view
+
+    def to_json(self, obj, resource_name, visible_fields, user, wrap):
+        json_dict = self._to_json(obj, visible_fields, user)
+        if wrap:
+            return {resource_name: json_dict}
+        return json_dict
 
     def _to_json(self, obj, visible_fields, user):
         json_dict = {}
@@ -46,9 +53,10 @@ class PABL(object):
                 pass
 
             if hasattr(field_value, '__pabl__'):
-                field_value = self.render_to('json', field_value, user)
+                field_value = self.render_to('json', field_value, user, False)
 
             json_dict[field_name] = field_value
+
         return json_dict
 
     @classmethod
