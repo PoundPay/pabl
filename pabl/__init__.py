@@ -65,4 +65,4 @@ class PABL(object):
         while dotted.find('.') >= 0:
             root, _, dotted = dotted.partition('.')
             value = getattr(value, root)
-        return getattr(value, dotted)
+        return getattr(value, dotted, None)
