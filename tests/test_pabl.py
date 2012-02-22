@@ -113,3 +113,34 @@ class TestPABL(unittest.TestCase):
         mock_thing = mock.Mock()
         result = PABL.find_obj(mock_thing, input)
         self.assertEqual(mock_thing.something.nested.here.the.thing, result)
+
+    def test_list(self):
+        mock_account = mock.Mock()
+        mock_account.__pabl__ = 'test.pabl'
+
+        mock_subitem = mock.Mock()
+        mock_subitem.__pabl__ = 'test.pabl'
+
+        mock_account.alias.return_value = [mock_subitem, mock_subitem]
+
+        pabl = PABL(self.path_to_templates, self.module_directory)
+        json = pabl.render_to('json', mock_account, None)
+
+        self.assertDictEqual(json,
+                {'account': {
+                'id': mock_account.id.return_value,
+                'title': mock_account.title.return_value,
+                'aliased': [{
+                    'id': mock_subitem.id.return_value,
+                    'title': mock_subitem.title.return_value,
+                    'aliased': mock_subitem.alias.return_value,
+                    },
+                        {
+                        'id': mock_subitem.id.return_value,
+                        'title': mock_subitem.title.return_value,
+                        'aliased': mock_subitem.alias.return_value,
+                        }
+                ]
+            }
+         })
+

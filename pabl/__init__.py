@@ -16,8 +16,10 @@ class PABL(object):
     def render_to(self, format, obj, user=None, wrap=True):
         if isinstance(obj, tuple):
             template_name = obj[1]
-        else:
+        elif hasattr(obj, '__pabl__'):
             template_name = obj.__pabl__
+        else:
+            return obj
 
         view = self._load_view(template_name)
         return self.formatters[format](obj, view.resource_name,
@@ -51,6 +53,16 @@ class PABL(object):
                 field_value = field_value()
             except TypeError:  # object is not callable
                 pass
+
+            if isinstance(field_value, list):
+                pabl_list = []
+                for item in field_value:
+                    if hasattr(item, '__pabl__'):
+                        i = self.render_to('json', item, user, False)
+                    else:
+                        i = item
+                    pabl_list.append(i)
+                field_value = pabl_list
 
             if hasattr(field_value, '__pabl__'):
                 field_value = self.render_to('json', field_value, user, False)
